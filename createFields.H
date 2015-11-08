@@ -26,6 +26,20 @@ volVectorField U
     mesh
 );
 
+Info<< "Creating field F\n" << endl;
+volScalarField F
+(
+    IOobject
+    (
+        "F",
+        runTime.timeName(),
+        mesh,
+        IOobject::MUST_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh
+);
+
 Info<< "Creating field S\n" << endl;
 volScalarField S
 (
