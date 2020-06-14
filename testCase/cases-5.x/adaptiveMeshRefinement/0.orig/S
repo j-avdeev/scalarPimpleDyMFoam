@@ -1,0 +1,76 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  5.x                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      S;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 0 0 0 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+    inlet
+    {
+        type            codedFixedValue;
+        value           uniform 0;
+
+        name            inletBC;
+
+        code
+        #{
+            const vectorField& faceCenter = this->patch().Cf();
+
+            scalarField values(faceCenter.size(), scalar(0));
+
+            forAll(faceCenter, f)
+            {
+                const point faceCenterPoint = faceCenter[f];
+
+                if (faceCenterPoint.y() > -0.0025 && faceCenterPoint.y() < 0.0025)
+                {
+                    values[f] = scalar(1);
+                }
+            }
+
+            operator==(values);
+        #};
+    }
+
+    side
+    {
+        type            zeroGradient;
+    }
+
+    outlet
+    {
+        type            zeroGradient;
+    }
+
+    cylinder
+    {
+        type            zeroGradient;
+    }
+
+    front
+    {   
+        type            empty;
+    }
+
+    back 
+    {   
+        type            empty;
+    }
+}
+
+// ************************************************************************* //
